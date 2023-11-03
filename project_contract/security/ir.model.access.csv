@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+project_contract.access_project_contract,access_project_contract,project_contract.model_project_contract,base.group_user,1,1,1,1
+project_contract.access_contract_contract,access_contract_contract,project_contract.model_contract_contract,base.group_user,1,1,1,1
+project_contract.access_edit_name_contract,access_edit_name_contract,project_contract.model_edit_name_contract,base.group_user,1,1,1,1

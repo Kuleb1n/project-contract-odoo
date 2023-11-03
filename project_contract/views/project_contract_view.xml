@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="project_contract_view_tree" model="ir.ui.view">
+        <field name="name">project.contract.tree</field>
+        <field name="model">project.contract</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="contract_ids" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="project_contract_view_kanban" model="ir.ui.view">
+        <field name="name">project.contract.kanban</field>
+        <field name="model">project.contract</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="contract_ids"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="row mb4">
+                                <div class="col-6 o_kanban_record_headings">
+                                    <strong>
+                                        <span>
+                                            <field name="name" on_change="1"/>
+                                        </span>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 o_kanban_record_headings">
+                                    <span>
+                                        Project creation date:
+                                    </span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong>
+                                        <i class="fa fa-clock-o" aria-label="Date" role="img" title="Date"/>
+                                        <field name="create_date" on_change="1"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 o_kanban_record_headings">
+                                    <span>
+                                        Contracts:
+                                    </span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong>
+                                        <field name="contract_ids"/>
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="project_contract_view_form" model="ir.ui.view">
+        <field name="name">project.contract.form</field>
+        <field name="model">project.contract</field>
+        <field name="arch" type="xml">
+            <form>
+                <headers>
+                    <button name="project_info_button" class="btn btn-primary" type="object"
+                            string="Display information about the project in the chat"/>
+                </headers>
+                <sheet string="Projects">
+                    <div name="button_box">
+                        <button type="object" name="action_show_contracts"
+                                class="oe_stat_button" icon="fa-book">
+                            <field name="contract_ids" string="Contracts" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" placeholder="Enter the project name"/>
+                            <field name="contract_ids" widget="many2many">
+                                <tree editable="bottom" create="false">
+                                    <field name="name"/>
+                                    <field name="create_date" optional="hide"/>
+                                    <field name="date_sign"/>
+                                    <field name="status" decoration-success="status == 'confirm'"
+                                           decoration-danger="status == 'completed'"
+                                           decoration-info="status == 'draft'" widget="badge"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                    <group>
+                        <separator/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="model_project" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="res_model">project.contract</field>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+
+    <record id="contract_contract_view_tree" model="ir.ui.view">
+        <field name="name">contract.contract.tree</field>
+        <field name="model">contract.contract</field>
+        <field name="arch" type="xml">
+            <tree>
+                <button name="edit_contract_name" string="Editing contract name" type="object"/>
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="date_sign" optional="hide"/>
+                <field name="status" decoration-success="status == 'confirm'" decoration-danger="status == 'completed'"
+                       decoration-info="status == 'draft'" widget="badge" optional="show"/>
+                <field name="project_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="contract_contract_view_kanban" model="ir.ui.view">
+        <field name="name">contract.contract.kanban</field>
+        <field name="model">contract.contract</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="date_sign"/>
+                <field name="status"/>
+                <field name="project_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click">
+                            <div class="row mb4">
+                                <div class="col-6 o_kanban_record_headings">
+                                    <strong>
+                                        <span>
+                                            <field name="name" on_change="1"/>
+                                        </span>
+                                    </strong>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong>
+                                        <i class="fa fa-clock-o" aria-label="Date" role="img" title="Date"/>
+                                        <field name="create_date" on_change="1"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <span>
+                                        Contract status:
+                                    </span>
+                                </div>
+                                <div class="col-6">
+                                    <span class="float-end">
+                                        <field name="status" widget="label_selection"
+                                               options="{'classes': {'draft': 'default', 'confirm': 'success', 'completed': 'danger'}}"
+                                               on_change="1"/>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 o_kanban_record_headings">
+                                    <span>
+                                        Date of confirmation:
+                                    </span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong>
+                                        <i class="fa fa-clock-o" aria-label="Date" role="img" title="Date"/>
+                                        <field name="date_sign" on_change="1"/>
+                                    </strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 o_kanban_record_headings">
+                                    <span>
+                                        Project:
+                                    </span>
+                                </div>
+                                <div class="col-6 text-end">
+                                    <strong>
+                                        <field name="project_id"/>
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="contract_contract_view_form" model="ir.ui.view">
+        <field name="name">contract.contract.form</field>
+        <field name="model">contract.contract</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                </header>
+                <sheet string="Contracts">
+                    <group>
+                        <group>
+                            <field name="name" modifiers="{&quot;required&quot;: true}"
+                                   placeholder="Enter the name of the contract"/>
+                            <field name="status"/>
+                        </group>
+                    </group>
+                    <button name="action_confirm_contract" type="object" string="Confirm the contract"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['|', '|', ('status', '=', 'completed'),
+                            ('status', '=', 'confirm'), ('status', '!=', 'draft')]}"/>
+                    <button name="action_complete_contract" type="object" string="Complete the contract"
+                            class="oe_highlight"
+                            attrs="{'invisible': ['!', ('status', '=', 'confirm'), ('status', '!=', 'draft')]}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="contract_contract_view_search" model="ir.ui.view">
+        <field name="name">contract.contract.search</field>
+        <field name="model">contract.contract</field>
+        <field name="arch" type="xml">
+            <search string="Name">
+                <field name="name"/>
+                <filter name="filter_draft_status" string="Draft" domain="[('status', '=', 'draft')]"/>
+                <filter name="filter_confirm_status" string="Confirm" domain="[('status', '=', 'confirm')]"/>
+                <filter name="filter_complete_status" string="Complete" domain="[('status', '=', 'completed')]"/>
+                <separator/>
+                <filter name="filter_date_sign" string="Date of signing" domain="[('date_sign', '!=', None)]"/>
+                <separator/>
+                <filter name="filter_project_id" string="Contracts with the project"
+                        domain="[('project_id', '!=', None)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="model_contract" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">contract.contract</field>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+
+    <menuitem id="system_menu" name="System of projects and contracts">
+        <menuitem id="model_menu_contract" action="model_contract"/>
+        <menuitem id="model_menu_project" action="model_project"/>
+    </menuitem>
+
+</odoo>
